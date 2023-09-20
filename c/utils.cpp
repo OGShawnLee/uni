@@ -8,6 +8,13 @@ string capitalise(string str) {
     return str;
 }
 
+double get_double(string prompt) {
+    double d;
+    cout << prompt << ": ";
+    cin >> d;
+    return d;
+}
+
 float get_float(string prompt) {
     float f;
     cout << prompt << ": ";

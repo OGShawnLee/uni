@@ -1,5 +1,6 @@
 #include "utils.cpp"
 #include <iostream>
+#include <cmath>
 
 void run_first_task_solution() {
     string name = get_string("What is your name?");
@@ -37,9 +38,19 @@ void run_second_task_solution() {
     report_value("Result of a + (b / (c - d))", result);
 }
 
+void run_third_task_solution() {
+    double a = get_double("Enter a number for a");
+    double b = get_double("Enter a number for b");
+    double z = get_double("Enter a number for z");
+
+    double result = pow(a, 3) + pow(b, 4) + sqrt(z);
+    report_value("Result of pow(a, 3) + pow(b, 4) + sqrt(z)", result);
+}
+
 int main() {
     // run_first_task_solution();
-    run_second_task_solution();
+    // run_second_task_solution();
+    run_third_task_solution();
 
     return 0;
 }
