@@ -1,7 +1,7 @@
 #include "utils.cpp"
 #include <iostream>
 
-int main() {
+void run_first_task_solution() {
     string name = get_string("What is your name?");
     int age = get_int("What is your age?");
     float height = get_float("What is your height? (metres)");
@@ -17,6 +17,29 @@ int main() {
     report_value("Height", height);
     report_value("Gender", gender);
     report_value("Crime", crime);
+}
+
+void run_second_task_solution() {
+    float a = get_float("Enter a number for a");
+    float b = get_float("Enter a number for b");
+    float c = get_float("Enter a number for c");
+    float d = get_float("Enter a number for d");
+    float e = get_float("Enter a number for e");
+    float f = get_float("Enter a number for f");
+
+    float result = (a + b) / (c + d);
+    report_value("Result of (a + b) / (c + d)", result);
+    
+    result = (a + (b / c)) / (d + (e / f));
+    report_value("Result of (a + (b / c)) / (d + (e / f))", result);
+    
+    result = a + (b / (c - d));
+    report_value("Result of a + (b / (c - d))", result);
+}
+
+int main() {
+    // run_first_task_solution();
+    run_second_task_solution();
 
     return 0;
 }
