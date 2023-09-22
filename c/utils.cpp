@@ -29,11 +29,31 @@ int get_int(string prompt) {
     return i;
 }
 
+
+uint get_uint(string prompt) {
+    uint i;
+    cout << prompt << ": ";
+    cin >> i;
+    return i;
+}
+
 string get_string(string prompt) {
     string s;
     cout << prompt << ": ";
     cin >> s;
     return s;
+}
+
+bool is_in_range(int value, int min, int max) {
+    return value >= min && value <= max;
+}
+
+bool is_outside_range(int value, int min, int max) {
+    return value < min || value > max;
+}
+
+void println(string str) {
+    cout << str << endl;
 }
 
 template <typename T>

@@ -13,3 +13,9 @@ def get_str(prompt: str) -> str:
 def report_value(name: str, value):
     print(f"{name}: {value}")
 
+
+def is_in_range(value, lower, upper):
+    return value >= lower and value <= upper
+
+def is_outside_range(value, lower, upper):
+    return value < lower or value > upper
