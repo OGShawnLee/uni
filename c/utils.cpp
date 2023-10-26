@@ -5,7 +5,7 @@ using namespace std;
 
 string capitalise(string str) {
     str[0] = toupper(str[0]);
-    return str;
+    return str;   
 }
 
 double get_double(string prompt) {
@@ -20,6 +20,14 @@ float get_float(string prompt) {
     cout << prompt << ": ";
     cin >> f;
     return f;
+}
+
+template<typename T>
+T get_input(string prompt) {
+    T input;
+    cout << prompt << ": ";
+    cin >> input;
+    return input;
 }
 
 int get_int(string prompt) {
