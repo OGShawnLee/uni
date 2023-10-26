@@ -52,7 +52,7 @@ bool is_outside_range(int value, int min, int max) {
     return value < min || value > max;
 }
 
-void println(string str) {
+void println(string str = "") {
     cout << str << endl;
 }
 
