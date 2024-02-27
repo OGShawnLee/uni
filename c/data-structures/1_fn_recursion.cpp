@@ -39,6 +39,18 @@ int countup_to(int n, int max) {
   return countup_to(n + 1, max);
 }
 
+int power(int base, int exponent) {
+  if (exponent == 0) return 1;
+
+  return base * power(base, exponent - 1);
+}
+
+int digit_len(int n) {
+  if (n < 10) return 1;
+
+  return 1 + digit_len(n / 10);
+}
+
 int main() {
   printf("Factorial of 5 is: %d\n", factorial(5));
   printf("Fibonacci of 10 is: %d\n", fibonacci(10));
@@ -51,4 +63,10 @@ int main() {
 
   std::cout << "Countup to 10" << std::endl;
   countup_to(1, 10);
+
+  printf("3 pow 3 is: %d\n", power(3, 3));
+  printf("9 pow 2 is: %d\n", power(9, 2));
+  printf("The digit length of 14 is: %d\n", digit_len(14));
+  printf("The digit length of 149 is: %d\n", digit_len(149));
+  printf("The digit length of 1492 is: %d\n", digit_len(1492));
 }
