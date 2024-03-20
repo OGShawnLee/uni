@@ -47,53 +47,37 @@ void each(Node* head, std::function<void(Node*)> callback) {
   each_child(head, callback);
 } 
 
-// Busca un nodo en la lista recursivamente sin incluir el nodo cabeza
+// Busca un nodo en la lista recursivamente
 Node* find(Node* head, int data) {
-  if (head->next == nullptr) {
-    return nullptr;
-  } 
-  
-  if (head->next->data == data) {
-    return head->next;
-  } 
-
+  if (head == nullptr) return nullptr;
+  if (head->data == data) return head;
   return find(head->next, data);
 }
 
-// Elimina todos los nodos de la lista recursivamente sin incluir el nodo cabeza
-void clear(Node* head) {
-  Node* current = head->next;
-
-  while (current != nullptr) {
-    Node* next = current->next;
-    delete current;
-    current = next;
+// Elimina un nodo hijo determinado de la lista recursivamente y reasigna los punteros
+void destroy_child(Node *node, int data) {
+  if (node->next == nullptr) return;
+  if (node->next->data == data) {
+    /*
+      Hay que eliminar el nodo dado y sustituirlo con su hijo para no perder la referencia al resto de la lista
+      1. Guardar el puntero al hijo
+      2. Eliminar el padre
+      3. Remplazar el padre con el hijo 
+    */
+    Node *next = node->next->next;
+    delete node->next;
+    node->next = next;
+  } else {
+    destroy_child(node->next, data);
   }
-
-  head->next = nullptr;
 }
 
-// Elimina todos los nodos de la lista recursivamente incluyendo el nodo cabeza
-void nuke(Node* &head) {
-  clear(head);
-  delete head;
-  head = nullptr;
-}
+// Verifica si un valor existe en la lista recursivamente
+bool has_value(Node *node, int data) {
+  if (node == nullptr) return false;
+  if (node->data == data) return true;
 
-// Elimina un nodo de la lista determinado por su valor recursivamente y recoloca los nodos
-Node* remove(Node* head, int data) {
-  if (head->next == nullptr) {
-    return nullptr;
-  } 
-  
-  if (head->next->data == data) {
-    Node* target = head->next;
-    head->next = head->next->next;
-    delete target;
-    return head;
-  } 
-
-  return remove(head->next, data);
+  return has_value(node->next, data);
 }
 
 // Imprime un nodo en la consola e imprime sus nodos hijos si existen recursivamente
@@ -111,34 +95,60 @@ void display(Node* head, size_t indentation = 0) {
   }
 }
 
+int get_int(std::string message) {
+  int input;
+  print(message + ": ");
+  std::cin >> input;
+  return input;
+}
+
 int main() {
-  Node* head = create(1);
+	Node *head = create(0);
+	println("Lista Enlazada (Nodos + Pointers)");
+	do {
+    println();
+		println("Elija una operación");
+		println("1. Crear");
+		println("2. Buscar");
+		println("3. Eliminar");
+		println("4. Mostrar");
+    println("5. Verificar");
+		println("-1. Salir");
+    println();
 
-  append(head, 2);
-  append(head, 3);
-  append(head, 4);
+		int option = get_int(">>> Seleccione opcion");
 
-  display(head);
-
-  Node* second = find(head, 2);
-
-  display(second);
-
-  println("All Children of Head");
-  each_child(head, [](Node* node) {
-    println("Node { data: " + std::to_string(node->data) + " }");
-  });
-
-  println("All Nodes");
-  each(head, [](Node* node) {
-    println("Node { data: " + std::to_string(node->data) + " }");
-  });
-
-  nuke(head);
-
-  if (head == nullptr) {
-    println("Head is null");
-  }
-
-  return 0;
+		if (option == -1) return 0;
+		
+		switch (option) {
+			case 1: {
+				int value = get_int("Introduzca el valor del nodo");
+				append(head, value);
+			} break;
+			case 2: {
+				int value = get_int("Introduzca el valor del nodo a buscar");
+				Node *node = find(head, value);
+				if (node != nullptr) {
+					display(node);
+				} else {
+					println("Nodo no ha sido encontrado");
+				}
+			} break;
+			case 3: {
+				int value = get_int("Introduzca el valor del nodo a eliminar");
+				destroy_child(head, value);
+			} break;
+			case 4:
+				display(head);
+				break;
+    case 5: {
+        int value = get_int("Introduzca el valor a verificar existencia");
+        bool exists = has_value(head, value);
+        println(exists ? "Valor Existente" : "Valor Inexistente");
+      } break;
+			default:
+				println("Opción Invalida");
+				break;
+		}
+	} while (true);
 }
