@@ -42,6 +42,32 @@ void clone(Node* original, Node* &target) {
 	clone(original->next, target->next);
 }
 
+// Inserta un nodo de manera ordenada (menor a mayor) iterativamente
+void insert_sorted_i(Node* &head, int data) {
+	Node* new_node = create(data);
+	if (head == nullptr) {
+		// La lista está vacía, el nuevo nodo será el primero
+		head = new_node;
+	} else if (head->data > data) {
+		// El nuevo nodo es menor que el primer nodo, hay que insertar antes de él
+		new_node->next = head;
+		head = new_node;
+	} else {
+		/*
+			Iterar sobre los nodos de la lista hasta encontrar un nodo mayor que el nuevo nodo
+			1. Guardar referencia al nodo mayor
+			2. Remplazarlo por el nuevo nodo
+			3. Apuntar el nuevo nodo al nodo remplazado (reconectar la lista)
+		*/
+		Node* current = head;
+		while (current->next != nullptr && current->next->data < data) {
+			current = current->next;
+		}
+		new_node->next = current->next;
+		current->next = new_node;
+	}
+}
+
 // Inserta un nodo de manera ordenada (menor a mayor) recursivamente
 void insert_sorted(Node* &head, int data) {
 	// Hay que crear un nuevo nodo
@@ -89,6 +115,20 @@ Node* find(Node* head, int data) {
 	return find(head->next, data);
 }
 
+// Elimina un nodo de la lista iterativamente
+void destroy_i(Node* &head) {
+	if (head == nullptr) return;
+
+	Node* current = head;
+	while (current != nullptr) {
+		Node* next = current->next;
+		delete current;
+		current = next;
+	}
+
+	head = nullptr;
+}
+
 // Elimina un nodo de la lista recursivamente
 void destroy(Node* &head) {
 	if (head == nullptr) return;
@@ -125,6 +165,24 @@ bool has_value(Node *node, int data) {
 }
 
 // Imprime un nodo en la consola e imprime sus nodos hijos si existen recursivamente
+void display_i(Node* node) {
+	if (node == nullptr) {
+		println("No hay ningún nodo para mostrar");
+		return;
+	}
+
+	Node* current = node;
+	size_t indentation = 0;
+
+	while (current != nullptr) {
+		std::string indent = std::string(indentation, ' ');
+		println(indent + "Node { data: " + std::to_string(current->data) + " }");
+		current = current->next;
+		indentation += 2;
+	}
+}
+
+// Imprime un nodo en la consola e imprime sus nodos hijos si existen recursivamente
 void display(Node* node, size_t indentation = 0) {
 	if (node == nullptr) {
 		println("No hay ningún nodo para mostrar");
@@ -144,6 +202,19 @@ void display(Node* node, size_t indentation = 0) {
 	}
 }
 
+// Actualiza un nodo en la lista iterativamente
+void update_i(Node* node, int target, int data) {
+	Node* current = node;
+	while (current != nullptr) {
+		if (current->data == target) {
+			current->data = data;
+			break;
+		}
+		current = current->next;
+	}
+}
+
+// Actualiza un nodo en la lista recursivamente
 void update(Node* node, int target, int data) {
   if (node == nullptr) return;
   if (node->data == target) {
@@ -151,6 +222,19 @@ void update(Node* node, int target, int data) {
   } else {
     update(node->next, target, data);
   }
+}
+
+// Clona una lista iterativamente sin duplicados
+void clone_clean_i(Node* original, Node* &target) {
+	Node* current = original;
+	
+	while (current != nullptr) {
+		if (has_value(target, current->data) == false) {
+			append(target, current->data);
+		}
+
+		current = current->next;
+	}	
 }
 
 int get_int(std::string message) {
@@ -170,9 +254,14 @@ int main() {
 		println("2. Buscar");
 		println("3. Eliminar");
 		println("4. Mostrar");
+		println("41. Mostrar Iterativamente");
 		println("5. Verificar");
 		println("6. Insertar Ordenadamente");
+		println("61. Insertar Ordenadamente Iterativamente");
 		println("7. Clonar");
+		println("71. Clonar sin duplicados Iterativamente");
+		println("8. Modificar");
+		println("81. Modificar Iterativamente");
 		println("-1. Salir");
 		println();
 
@@ -199,23 +288,36 @@ int main() {
 				destroy_child(head, value);
 			} break;
 			case 4:
-				display(head);
+			case 41:
+				if (option == 4) display(head);
+				else display_i(head);
 				break;
 			case 5: {
 				int value = get_int("Introduzca el valor del nodo a verificar existencia");
 				bool exists = has_value(head, value);
 				println(exists ? "Valor Existente" : "Valor Inexistente");
 			} break;
-			case 6: {
+			case 6:
+			case 61: {
 				int value = get_int("Introduzca el valor a insertar ordenadamente");
-				insert_sorted(head, value);		
+				if (option == 6) insert_sorted(head, value);
+				else insert_sorted_i(head, value);
 			} break;
-			case 7: {
+			case 7:
+			case 71: {
 				Node* copy = nullptr;
-				clone(head, copy);
+				if (option == 7) clone(head, copy);
+				else clone_clean_i(head, copy);
 				println("Copia:");
 				display(copy);
 				destroy(copy);
+			} break;
+			case 8: 
+			case 81: {
+				int target = get_int("Introduzca el valor del nodo a modificar");
+				int value = get_int("Introduzca el nuevo valor del nodo");
+				if (option == 8) update(head, target, value);
+				else update_i(head, target, value);
 			} break;
 			default:
 				println("Opción Invalida");
