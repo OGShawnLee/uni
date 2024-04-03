@@ -100,6 +100,39 @@ void quick_sort(int arr[], int start, int end) {
   quick_sort(arr, r_index + 1, end);
 }
 
+// Heap Sort Implementation
+void heapify(int arr[], int len, int i) {
+  int largest = i;
+  int left = 2 * i + 1;
+  int right = 2 * i + 2;
+
+  if (left < len && arr[left] > arr[largest]) {
+    largest = left;
+  }
+
+  if (right < len && arr[right] > arr[largest]) {
+    largest = right;
+  }
+
+  if (largest != i) {
+    swap(arr[i], arr[largest]);
+    heapify(arr, len, largest);
+  }
+}
+
+void heap_sort(int arr[], int len) {
+  // Build the heap
+  for (int i = len / 2 - 1; i >= 0; i--) {
+    heapify(arr, len, i);
+  }
+
+  // Extract elements from the heap
+  for (int i = len - 1; i >= 0; i--) {
+    swap(arr[0], arr[i]);
+    heapify(arr, i, 0);
+  }
+}
+
 int main() {
   int arr[] = {5, 2, 3, 1, 4};
   merge_sort(arr, 0, 4);
@@ -108,6 +141,10 @@ int main() {
   int arr_2[] = {5, 2, 3, 1, 4};
   quick_sort(arr_2, 0, 4);
   print_arr("Sorted array with quick sort", arr_2, 5);
+
+  int arr_3[] = {5, 2, 3, 1, 4};
+  heap_sort(arr_3, 5);
+  print_arr("Sorted array with heap sort", arr_3, 5);
 
   return 0;
 }
