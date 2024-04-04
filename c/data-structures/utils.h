@@ -37,6 +37,10 @@ void print_arr(string message, int arr[], int len) {
   cout << ", " << arr[len - 1] << "]" << endl;
 }
 
+void print(std::string message) {
+	std::cout << message;
+}
+
 void println(string message) {
   cout << message << endl;
 }
