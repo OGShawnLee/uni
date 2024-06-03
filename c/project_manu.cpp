@@ -1,7 +1,12 @@
 #include <iostream>
 #include <string>
+#include <fstream>
+#include <vector>
 
 using namespace std;
+
+// Nota: Se cargan y se guardan los productos en un archivo de texto llamado "catalogo.txt"
+// El formato de cada producto es: proveedor, nombre, precio, cantidad;
 
 struct Producto {
   // La clave es generada a partir del proveedor y el numero de producto en el sistema
@@ -479,12 +484,105 @@ void productosMayorPrecio(Producto productos[], int cantidadProductos) {
   }
 }
 
+/*
+    
+  1. Para cargar los productos de un archivo de texto.
+  2. Se lee el archivo linea por linea.
+  3. Se separan los datos de cada linea a partir de comas.
+  4. Se crea un producto con los datos.
+  5. Se agrega el producto al arreglo de productos.
+  6. Se incrementa la cantidad de productos.
+  - Se usa para cargar los productos al inicio del programa
+  Nota: El formato de cada producto es:
+    proveedor, nombre, precio, cantidad;
+*/
+void cargarProductos(Producto productos[], int &cantidadProductos) {
+  ifstream archivo("catalogo.txt");
+
+  imprimirLinea("Cargando catalogo...");
+
+  if (archivo.is_open()) {
+    string linea;
+
+    while (getline(archivo, linea)) {
+      vector<string> propiedades;
+      string propiedad = "";
+      
+      /*
+        1. Se itera sobre cada caracter de la linea y se acumula en la propiedad en ciertos casos.
+        2. Si se encuentra una coma o un punto y coma, se agrega la propiedad al vector y se reinicia la propiedad.
+        3. Se crea un producto con las propiedades y se agrega al arreglo de productos.
+      */
+
+      for (int i = 0; i < linea.length(); i++) {
+        char caracter = linea[i];
+        
+        /*
+          1. Si el caracter es una coma o un punto y coma, se agrega la propiedad al vector y se reinicia la propiedad.
+          2. Si el caracter no es un espacio, se agrega a la propiedad.
+        */
+        if (caracter == ',' || caracter == ';') {
+          // Se elimina el espacio al principio de la propiedad
+          // El espacio se coloca para que sea mas facil leer las propiedades en el archivo
+          if (propiedad[0] == ' ') {
+            propiedad = propiedad.substr(1);
+          }
+
+          propiedades.push_back(propiedad);
+          propiedad = "";
+        } else {
+          propiedad += caracter;
+        }
+      }
+
+      Producto producto;
+      producto.proveedor = propiedades[0];
+      producto.nombre = propiedades[1];
+      producto.precio = stof(propiedades[2]);
+      producto.cantidad = stoi(propiedades[3]);
+      producto.clave = generarClave(producto.proveedor, cantidadProductos + 1);
+      productos[cantidadProductos] = producto;
+      cantidadProductos++;
+    }
+
+    imprimirLinea("Catalogo cargado con exito");
+
+    archivo.close();
+  } else {
+    imprimirLinea("No se pudo cargar el catalogo");
+  }
+}
+
+void guardarProductos(Producto productos[], int cantidadProductos) {
+  ofstream archivo("catalogo.txt");
+
+  imprimirLinea("Guardando catalogo...");
+
+  if (archivo.is_open()) {
+    for (int i = 0; i < cantidadProductos; i++) {
+      Producto producto = productos[i];
+      string productoTexto;
+      productoTexto += producto.proveedor + ", ";
+      productoTexto += producto.nombre + ", ";
+      productoTexto += to_string(producto.precio) + ", ";
+      productoTexto += to_string(producto.cantidad) + ";";
+      archivo << productoTexto << '\n';
+    }
+
+    archivo.close();
+    imprimirLinea("Catalogo guardado con exito");
+  } else {
+    imprimirLinea("No se pudo guardar el catalogo");
+  }
+}
+
 int main() {
   imprimirLinea("Bienvenido al sistema de gestion de productos");
 
   Producto productos[50];
-  int cantidadProductos = 0;
-  
+  int cantidadProductos = 0; 
+  cargarProductos(productos, cantidadProductos);
+
   // Programa principal
   /*
     Ciclo infinito que se rompe cuando el usuario selecciona la opcion de salir
@@ -513,7 +611,7 @@ int main() {
         break;
       default:
         imprimirLinea("Gracias por usar el sistema de gestion de productos"); 
-        imprimirLinea("Saliendo...");
+        guardarProductos(productos, cantidadProductos);
         return 0;
     }
   }

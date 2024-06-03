@@ -1,0 +1,4 @@
+Astra Zeneca, Vacuna COVID-19, 450.500000, 10;
+Coca Cola, Coca Cola 500ml, 18.000000, 20;
+Coca Cola, Coca Cola 1000ml, 30.000000, 10;
+Coca Cola, Coca Cola 3000ml, 68.000000, 5;
