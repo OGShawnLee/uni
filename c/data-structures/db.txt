@@ -1,0 +1,7 @@
+Shawn Lee, 12;
+Luis Donaldo, 10;
+Miguel, 7;
+Julia, 8;
+Rodrigo, 20;
+Edgar, 100;
+Xcaret, 0;
