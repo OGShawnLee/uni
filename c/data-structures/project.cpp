@@ -39,7 +39,7 @@ bool is_whitepace(string ln) {
 // Obtiene una linea de texto hasta que sea valida (no vacia)
 string get_line(string prompt) {
   string line;
-  
+
   while (true) {
     print(prompt + ": ");
     getline(cin, line);
@@ -78,9 +78,9 @@ int get_int(string prompt) {
 
   while (true) {
     print(prompt + ": ");
-  
+
     cin >> integer;
-    
+
     if (integer >= 0) {
       break;
     } else {
@@ -97,6 +97,7 @@ enum Option {
   SHOW_ALL,
   SHOW_LESS_THAN,
   SHOW_MORE_THAN,
+  DELETE,
   EXIT,
 };
 
@@ -111,7 +112,8 @@ Option get_option() {
     println("2. Mostrar alumnos");
     println("3. Alumnos con menor calificacion a cierto valor");
     println("4. Alumnos con mayor calificacion a cierto valor");
-    println("5. Salir");
+    println("5. Borrar un alumno");
+    println("6. Salir");
 
     // Obtener indicacion
     cout << ">>> Seleccione una opcion: ";
@@ -122,8 +124,9 @@ Option get_option() {
     if (option == 2) return Option::SHOW_ALL;
     if (option == 3) return Option::SHOW_LESS_THAN;
     if (option == 4) return Option::SHOW_MORE_THAN;
-    if (option == 5) return Option::EXIT;
-    
+    if (option == 5) return Option::DELETE;
+    if (option == 6) return Option::EXIT;
+
     clear();
     println("Opcion invalida intente de nuevo");
   }
@@ -208,7 +211,7 @@ vector<Student> find_all_less_than(
   return students;
 }
 
-// 4. Alumnos con menor calificacion a cierto valor
+// 3. Alumnos con menor calificacion a cierto valor
 /*
   1. Para mostrar los alumnos con menor calificacion a cierto valor.
   2. Se obtiene el valor del usuario.
@@ -283,8 +286,34 @@ void print_students_with_higher_than_grade(map<size_t, Student> &db, Node* root)
   }
 }
 
+bool has_student(map<size_t, Student> &db, size_t id) {
+  return db.count(id) != 0;
+}
+
+// 5. Borrar un cierto alumno
+void remove(map<size_t, Student> &db, Node* &root) {
+  println("4. Borrar un alumno:");
+
+  if (db.size() == 0) {
+    println("No hay alumnos en la base de datos");
+    return;
+  }
+
+  cin.ignore();
+  int id = get_int("Ingrese la id del alumno a borrar");  
+
+  if (has_student(db, id)) {
+    Student student = db.at(id);
+    db.erase(id);
+    root = remove(root, student.grade);
+    println(student.name + " ha sido borrado");
+  } else {
+    println("Alumno no existe con id: " + to_string(id));
+  }
+}
+
 /*
-    
+
   1. Para cargar los productos de un archivo de texto.
   2. Se lee el archivo linea por linea.
   3. Se separan los datos de cada linea a partir de comas.
@@ -306,7 +335,7 @@ void load_students(map<size_t, Student> &db, Node* &root) {
     while (getline(file, ln)) {
       vector<string> properties;
       string property = "";
-      
+
       /*
         1. Se itera sobre cada caracter de la linea y se acumula en la propiedad en ciertos casos.
         2. Si se encuentra una coma o un punto y coma, se agrega la propiedad al vector y se reinicia la propiedad.
@@ -315,7 +344,7 @@ void load_students(map<size_t, Student> &db, Node* &root) {
 
       for (size_t i = 0; i < ln.length(); i++) {
         char character = ln[i];
-        
+
         /*
           1. Si el caracter es una coma o un punto y coma, se agrega la propiedad al vector y se reinicia la propiedad.
           2. Si el caracter no es un espacio, se agrega a la propiedad.
@@ -384,16 +413,21 @@ int main() {
       case Option::INSERT: {
         add_student(db, root);
         print(root);
+        // print(root, 0);
       } break;
       case Option::SHOW_ALL: {
         print_students(db);
         print(root);
+        // print(root, 0);
       } break;
       case Option::SHOW_LESS_THAN: {
         print_students_with_lower_than_grade(db, root);
       } break;
       case Option::SHOW_MORE_THAN: {
         print_students_with_higher_than_grade(db, root);
+      } break;
+      case Option::DELETE: {
+        remove(db, root);
       } break;
       case Option::EXIT: {
         println("Gracias por usar el sistema!");

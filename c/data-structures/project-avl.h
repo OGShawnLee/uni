@@ -108,14 +108,14 @@ Node* insert(Node* root, int grade, size_t id) {
   return root;
 }
 
-Node* remove(Node* root, int grade) {
+Node* remove(Node* root, int grade, size_t id) {
   if (root == nullptr) return nullptr;
 
   if (grade < root->grade) {
     root->left = remove(root->left, grade);
   } else if (grade > root->grade) {
     root->right = remove(root->right, grade);
-  } else {
+  } else if (id == root->id) {
     if (root->left == nullptr) {
       Node* right = root->right;
       delete root;
