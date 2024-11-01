@@ -76,12 +76,6 @@ std::string get_shape_name(const Shape &shape) {
   return SHAPE_NAME_MAPPING.at(shape);
 }
 
-std::string lowercase(const std::string &text) {
-  std::string result = text;
-  std::transform(result.begin(), result.end(), result.begin(), ::tolower);
-  return result;
-}
-
 double get_circle_area(const double &big) {
   return M_PI * std::pow(big, 2);
 }
